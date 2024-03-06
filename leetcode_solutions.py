@@ -178,3 +178,116 @@ def searchMatrix(matrix, target):
 matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]]
 target = 20
 print(f"Target in 2D matrix : {searchMatrix(matrix, target)}")
+
+"""
+1329. A matrix diagonal is a diagonal line of cells starting from some cell in either the topmost row or leftmost column and going in the bottom-right direction until reaching the matrix's end. For example, the matrix diagonal starting from mat[2][0], where mat is a 6 x 3 matrix, includes cells mat[2][0], mat[3][1], and mat[4][2].
+
+Given an m x n matrix mat of integers, sort each matrix diagonal in ascending order and return the resulting matrix.
+
+mat = [[3,3,1,1],[2,2,1,2],[1,1,1,2]]
+"""
+def diagonalSort(matrix):
+    #First understand where does the diagonal start from, looking at this problem take the topmost row and leftmost col
+    
+    sorted_diagonal = []
+    rows, cols = len(matrix), len(matrix[0])
+
+    #Getting the leftmost col
+    for r in range(rows):
+        sorted_diagonal.append([r, 0])
+
+    #Getting the topmost row
+    for c in range(1, cols):
+        sorted_diagonal.append([0, c])
+
+    print(sorted_diagonal)
+    for start_row, start_col in sorted_diagonal:
+        diagonal_elements = []
+        row, col = start_row, start_col
+        while row < rows and col < cols:
+            diagonal_elements.append(matrix[row][col])
+            row, col = row + 1, col + 1
+
+            diagonal_elements.sort()
+
+            row, col = start_row, start_col
+            for element in diagonal_elements:
+                matrix[row][col] = element
+                row, col = row + 1, col + 1
+    return matrix
+
+mat = [[3,3,1,1],[2,2,1,2],[1,1,1,2]]
+#Output: [[1,1,1,1],[1,2,2,2],[1,2,3,3]]
+print(f" After sorting diagonally {diagonalSort(mat)}")
+
+"""
+1030. You are given four integers row, cols, rCenter, and cCenter. There is a rows x cols matrix and you are on the cell with the coordinates (rCenter, cCenter).
+
+Return the coordinates of all cells in the matrix, sorted by their distance from (rCenter, cCenter) from the smallest distance to the largest distance. You may return the answer in any order that satisfies this condition.
+
+The distance between two cells (r1, c1) and (r2, c2) is |r1 - r2| + |c1 - c2|.
+Input: rows = 1, cols = 2, rCenter = 0, cCenter = 0
+Output: [[0,0],[0,1]]
+Explanation: The distances from (0, 0) to other cells are: [0,1]
+
+"""
+def allCellsDistOrder(rows, cols, rCenter, cCenter):
+    # mat = [[i, j] for i in range(rows) for j in range(cols)]
+    # sorted_dist = sorted(mat, key = lambda x: abs(x[0] - rCenter) + abs(x[1] - cCenter))
+    # return sorted_dist
+    mat = []
+    for i in range(rows):
+        for j in range(cols):
+            dist = abs(i - rCenter) + abs(j - cCenter)
+            mat.append([i, j, dist])
+    
+    mat.sort(key = lambda x: x[2])
+
+    for cords in mat:
+        cords.pop()
+    
+    return mat
+
+rows = 2
+cols = 2
+rCenter = 0
+cCenter = 1
+#Output: [[0,1],[0,0],[1,1],[1,0]]
+print(f"All cells distance is {allCellsDistOrder(rows, cols, rCenter, cCenter)}")
+
+"""
+2679. Sum in a matrix
+You are given a 0-indexed 2D integer array nums. Initially, your score is 0. Perform the following operations until the matrix becomes empty:
+
+From each row in the matrix, select the largest number and remove it. In the case of a tie, it does not matter which number is chosen.
+Identify the highest number amongst all those removed in step 1. Add that number to your score.
+Return the final score.
+
+Input: nums = [[7,2,1],[6,4,2],[6,5,3],[3,2,1]]
+Output: 15
+"""
+def sumMatrix(nums):
+    for r in range(len(nums)):
+        nums[r].sort(reverse=True)
+   
+    rows, cols = len(nums), len(nums[0])
+    total = 0
+    max_val = 0
+    for c in range(cols):
+        temp = []
+        for r in range(rows):
+            temp.append(nums[r][c])
+        
+        if temp:
+            max_val = max(temp)
+            total += max_val
+    return total
+
+
+nums = [[7,2,1],[6,4,2],[6,5,3],[3,2,1]]
+print(f"Sum in a matrix is {sumMatrix(nums)}")
+
+
+
+
+
