@@ -287,7 +287,145 @@ def sumMatrix(nums):
 nums = [[7,2,1],[6,4,2],[6,5,3],[3,2,1]]
 print(f"Sum in a matrix is {sumMatrix(nums)}")
 
+def mergesort(li):
+    """
+    Practising merge sort to understand and dive deep into devide and conquer
+    where once you devide the problem to subproblem, you recursively solve it
+   
+    """
 
+    #Divide until the length of array is less than or equal to 1
+    if len(li) <= 1:
+        return li
+
+    n = len(li)
+    mid = n // 2
+    left_arr = li[:mid]
+    right_arr = li[mid:]
+
+    left_arr = mergesort(left_arr)
+    right_arr = mergesort(right_arr)
+
+    left_index, right_index = 0, 0
+    data_index = 0
+    result = []
+
+    while left_index < len(left_arr) and right_index < len(right_arr):
+        if left_arr[left_index] < right_arr[right_index]:
+            result.append(left_arr[left_index])
+            left_index += 1
+            data_index += 1
+        else:
+            result.append(right_arr[right_index])
+            right_index += 1
+            data_index += 1
+    
+    while left_index < len(left_arr):
+        result.append(left_arr[left_index])
+        left_index += 1
+        data_index += 1
+    
+    while right_index < len(right_arr):
+        result.append(right_arr[right_index])
+        right_index += 1
+        data_index += 1
+
+    return result
+
+#Testing mergesort logic 
+print(f"Mergesort = {mergesort([1,3,4,5,2,6])}")   
+
+def TwoSum(nums, target):
+    """
+Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+You can return the answer in any order.
+Example 1:
+
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+    """
+    #Using a HashMap to map indices with values
+    numsMap = {}
+    output = [] #output array to store all the target indices
+
+    for i in range(len(nums)):
+        diff = (target - nums[i])
+        if diff in numsMap:
+            output.append(numsMap[diff])
+            output.append(i)
+            return output
+        else:
+            numsMap[nums[i]] = i
+
+
+nums = [2,7,11,15]
+target = 9
+print(f"Output array would be {TwoSum(nums, target)}")
+
+def TwoSumSorted(nums, target):
+    """
+    Given a 1-indexed array of integers numbers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number. Let these two numbers be numbers[index1] and numbers[index2] where 1 <= index1 < index2 <= numbers.length.
+Return the indices of the two numbers, index1 and index2, added by one as an integer array [index1, index2] of length 2.
+The tests are generated such that there is exactly one solution. You may not use the same element twice.
+Your solution must use only constant extra space.
+Example 1:
+
+Input: numbers = [2,7,11,15], target = 9
+Output: [1,2]
+Explanation: The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2].
+
+    """
+    #For this, we can use a two pointer solution because the array is already sorted
+    left = 0
+    right = len(nums) - 1
+    output = []
+
+    while left < right:
+        result = nums[left] + nums[right]
+        if result < target:
+            left += 1
+        elif result > target:
+            right -= 1
+        else:
+            output.append([left + 1, right + 1])
+            return output
+
+numbers = [2,7,11,15]
+target = 9
+print(f"Two sum in a sorted array {TwoSumSorted(numbers, target)}")
+
+def reformatDate(date):
+    """
+    Given a date string in the form Day Month Year, where:
+
+Day is in the set {"1st", "2nd", "3rd", "4th", ..., "30th", "31st"}.
+Month is in the set {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}.
+Year is in the range [1900, 2100].
+Convert the date string to the format YYYY-MM-DD, where:
+
+YYYY denotes the 4 digit year.
+MM denotes the 2 digit month.
+DD denotes the 2 digit day.Input: date = "20th Oct 2052"
+Output: "2052-10-20"
+    """
+    #take the date string, split it based on white spaces and addd it to an array
+    month_map = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", "Jul": "07", "Aug":"08", "Sep": "09", "Oct":"10", "Nov": "11", "Dec": "12"}
+    arr_date = date.split(" ")
+
+    day = arr_date[0][:-2]
+    month = month_map[arr_date[1]]
+    year = arr_date[2]
+
+    if int(day) < 10:
+        day = "0" + day
+    
+    return f"{year}-{month}-{day}"
+    
+date = "20th Oct 2052"
+print(f" Date is {reformatDate(date)}")
+
+    
 
 
 
