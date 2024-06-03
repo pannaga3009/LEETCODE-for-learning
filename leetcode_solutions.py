@@ -484,7 +484,94 @@ Example 2:
 
 print("Length of the longest substring is ", lengthOfLongestSubstring("abcabcbb"))
         
+class Solution:
+    def isSolvable(self, words:[str], result: str) -> bool:
+        # Append the result to the list of words
+        words.append(result)
+        # Get the number of rows (words) and the maximum length of a word
+        R, C = len(words), max(map(len, words))
+        # Reverse each word and convert them to lists
+        words = list(map(list, map(reversed, words)))
+
+        # Dictionary to store mappings between letters and digits
+        letters = {}
+        # List to keep track of which digits are assigned to letters
+        nums = [None] * 10
+
+        # Backtracking function to solve the equation
+        def walk(r, c, carry):
+            # If reached end of a column
+            if c >= C:
+                # Check if carry is zero
+                return carry == 0
+            # If reached end of all rows
+            if r == R:
+                # Check if carry is zero and if it's the last column
+                if carry % 10 != 0:
+                    return False
+                return walk(0, c + 1, carry // 10)
+
+            # Get the current word and its length
+            word = words[r]
+            W = len(word)
+            # If reached end of current word
+            if c >= W:
+                # Move to the next row
+                return walk(r + 1, c, carry)
+
+            # Get the current character
+            l = word[c]
+            # Determine the sign based on whether it's the result word or not
+            sign = -1 if r == R - 1 else 1
+
+            # If the character is already mapped
+            if l in letters:
+                n = letters[l]
+                # Check if leading zero is assigned when the word has multiple digits
+                if n == 0 and W > 1 and c == W - 1:
+                    return False
+                return walk(r + 1, c, carry + sign * n)
+            else:
+                # Try assigning each unused digit to the character
+                for n, v in enumerate(nums):
+                    if not v:
+                        # Check if leading zero is assigned when the word has multiple digits
+                        if n > 0 or W == 1 or c != W - 1:
+                            # Assign digit to character
+                            nums[n] = l
+                            letters[l] = n
+
+                            # Recur with updated carry
+                            if walk(r + 1, c, carry + sign * n):
+                                return True
+
+                            # Undo assignment
+                            nums[n] = None
+                            del letters[l]
+            return False
+
+        # Start backtracking from the first character
+        return walk(0, 0, 0)  
+
+def KthSmallestElment(nums, k):
+    """
+    We can use heap to get the smallest element, by default heapq is min heap
+    """
+    heap_arr = []
+    import heapq
     
+    for n in nums:
+        heapq.heappush(heap_arr, n)
+
+    for _ in range(1, k):
+        heapq.heappop(heap_arr)
+    
+    x = heapq.heappop(heap_arr)
+    return x
+
+nums = [22,33,77,11,90]
+print("Kth largest element",KthSmallestElment(nums, 4))
 
 
+    
 
