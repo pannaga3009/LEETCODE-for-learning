@@ -570,7 +570,123 @@ def KthSmallestElment(nums, k):
     return x
 
 nums = [22,33,77,11,90]
-print("Kth largest element",KthSmallestElment(nums, 4))
+print("Kth smallest element",KthSmallestElment(nums, 4))
+
+import heapq
+def KthLargestElement(nums, k):
+    """
+    Brute force: arr.sort()
+    index_k = len(arr) - k
+    return arr[index_k]
+    
+    Using heap - n log k
+    import heapq
+    heap = []
+
+    for n in nums:
+        heapq.heappush(heap, n)
+
+        if len(heap) > k:
+            heapq.heappop(heap)
+
+    x = heapq.heappop(heap)
+    return x
+
+    QuickSelect - average case result = O(n)
+    """
+    k = len(nums) - k
+    def quickSelect(l, r):
+        for i in range(l, r):
+            p, pivot = l, nums[r]
+            if nums[i] <= pivot:
+                nums[p], nums[i] = nums[i], nums[p]
+                p += 1
+    
+        nums[p], nums[r] = nums[r], nums[p]
+    
+        if p > k: return quickSelect(l, p - 1)
+        elif p < k: return quickSelect(p + 1, r)
+        else:  return nums[p]
+
+    return quickSelect(0, len(nums)-1)
+        
+        
+nums = [3,2,1,5,6,4]
+print("Kth largest element",KthLargestElement(nums, 4))
+
+def leetcode347(nums, k):
+    """
+Input: nums = [1,1,1,1,2,3,3], k = 2
+Output: [1,2]
+
+dict_freq = {1:3, 2:1, 3:2}
+can use sorted function - n log n
+or can use heapq - n log k
+
+    """
+    dict_freq = {}
+    for n in nums:
+        dict_freq[n] = dict_freq.get(n, 0) + 1
+
+    heap = []
+    for key, val in dict_freq.items():
+        if len(heap) < k:
+            heapq.heappush(heap, (val, key))
+        else:
+            heapq.heappushpop(heap, (val, key))
+
+    return [h[1] for h in heap]
+
+
+    # sorted_output = sorted(dict_freq.keys(), key = lambda x: dict_freq[x], reverse=True)
+    # return sorted_output[:k]
+
+nums = [1,1,1,1,2,2,2,2,2,3,3]
+k = 1
+print(leetcode347(nums, k))
+
+def leetcode33(nums, target):
+    """
+Prior to being passed to your function, nums is possibly rotated at an unknown pivot index k (1 <= k < nums.length) such that the resulting array is [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). For example, [0,1,2,4,5,6,7] might be rotated at pivot index 3 and become [4,5,6,7,0,1,2].
+Given the array nums after the possible rotation and an integer target, return the index of target if it is in nums, or -1 if it is not in nums.
+You must write an algorithm with O(log n) runtime complexity.
+
+Example 1:
+
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+    """
+    left, right = 0, len(nums) - 1
+
+    while left<=right:
+        mid = left + (right - left) // 2
+
+        if nums[mid] == target:
+            return mid
+
+        if nums[left] <= nums[mid]: #Assuming left is sorted
+            if nums[left] <= target < nums[mid]: #assuming target comes in the left
+                right = mid - 1
+            else:
+                left = mid + 1
+        else:
+            if nums[mid] < target <= nums[right]:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+    return -1
+
+
+nums = [4,5,6,7,0,1,2]
+target = 1
+print(leetcode33(nums, target))
+
+    
+
+
+
+    
 
 
     
