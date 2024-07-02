@@ -712,8 +712,78 @@ Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without
 board = [["5","3",".",".","7",".",".",".","."],["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],["8",".",".",".","6",".",".",".","3"],["4",".",".","8",".","3",".",".","1"],["7",".",".",".","2",".",".",".","6"],[".","6",".",".",".",".","2","8","."],[".",".",".","4","1","9",".",".","5"],[".",".",".",".","8",".",".","7","9"]]
 print("Executed Sudoku", leetcode36(board))
 
+def numIslandsDFS(grid):
+    """
+    two types of approach -> DFS, stack and BFS, dequeue
+
+    """
+    rows = len(grid)
+    cols = len(grid[0])
+    directions = [(1, 0), (0,1), (-1, 0), (0, -1)]
+    numIsland = 0
+    visited = set()
+
+    def dfs(r, c):
+        stack = [(r, c)]
+        visited.add((r, c))
+
+        while stack:
+            x, y = stack.pop()
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if(0 <= nx < rows and 0 <= ny < cols and grid[nx][ny] == "1" and (nx, ny) not in visited):
+                    stack.append((nx, ny))
+                    visited.add((nx, ny))
 
 
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1' and (r, c) not in visited:
+                numIsland += 1
+                dfs(r, c)
+    return numIsland
+
+from collections import deque
+def numIslandsBFS(grid):
+    """
+    deque since we are going every level
+    """
+    visited = set()
+    rows = len(grid)
+    cols = len(grid[0])
+    numOfIsland = 0
+    directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+
+    def bfs(r, c):
+        q = deque([(r, c)])
+        visited.add((r,c))
+
+        while q:
+            x, y = q.popleft()
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if(0 <= nx < rows and 0 <= ny < cols and grid[nx][ny] == "1" and (nx, ny) not in visited):
+                    q.append((nx, ny))
+                    visited.add((nx, ny))
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == "1" and (r, c) not in visited:
+                numOfIsland += 1
+                bfs(r, c)
+    return numOfIsland
+
+
+
+      
+grid =[
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+print(f"numIslandsDFS = {numIslandsDFS(grid)}")
+print(f"numIslandsBFS = {numIslandsBFS(grid)}")
     
 
 
