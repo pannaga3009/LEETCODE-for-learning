@@ -193,3 +193,64 @@ def validParenthesis(s):
     
 
 print(validParenthesis("()"))
+
+def names_decorator(function):
+    def wrapper(arg1, arg2):
+        arg1 = arg1.upper()
+        arg2 = arg2.upper()
+        string_hello = function(arg1, arg2)
+        return string_hello
+    return wrapper
+    
+@names_decorator
+def sayHello(name1, name2):
+    return 'Hello ' + name1 + "! Hello " + name2 + "!"
+    
+print(sayHello('Pans','Harish'))
+
+
+#Opening and closing a file
+file = open('example.txt', 'r')
+content = file.read()
+print("From the content",content)
+
+
+file.close()
+
+
+with open('example.txt', 'r') as file:
+    content = file.read()
+    print(content)
+
+
+with open('example.txt', 'a') as file:
+    content = file.write("I am getting through this no matter what")
+    print(content)
+
+with open('example.txt', 'w') as file:
+    content = file.write("Congrats on your job")
+    print(content)
+
+def pickle(data):
+    """
+    
+    Pickling is the process of converting a Python object into a byte stream.
+This byte stream can be stored in a file, transmitted over a network, or used in some other way.
+    """
+    import pickle
+
+    with open('data.pickle', 'wb') as file:
+        pickle.dump(data, file)
+
+data = {'name': 'Pannaga', 'age' : 26}
+pickle(data)
+
+
+def unPickle():
+    import pickle
+    with open('data.pickle', 'rb') as file:
+        loaded_data = pickle.load(file)
+    
+    print(loaded_data)
+
+unPickle()
