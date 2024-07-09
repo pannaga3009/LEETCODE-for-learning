@@ -34,4 +34,10 @@ def twoSum(array):
         
 print('Two sum', twoSum(array))        
 
-    
+""""
+select employee_name FROM employee
+where salary > 70000;
+"""
+
+
+
