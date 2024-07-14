@@ -786,5 +786,57 @@ print(f"numIslandsDFS = {numIslandsDFS(grid)}")
 print(f"numIslandsBFS = {numIslandsBFS(grid)}")
 
 
-    
+def partitionString(s):
+    """
+    Given a string s, partition the string into one or more substrings such that the characters in each substring are unique. That is, no letter appears in a single substring more than once.
+    Return the minimum number of substrings in such a partition.
+    Note that each character should belong to exactly one substring in a partition.
+    Input: s = "abacaba"
+Output: 4
+Explanation:
+Two possible partitions are ("a","ba","cab","a") and ("ab","a","ca","ba")
+    """
+    unique_char = set()
+    ans = 0
+    for i in s:
+        if i in unique_char:
+            unique_char = set()
+            ans += 1
+        unique_char.add(i)
+    return ans + 1
 
+
+def partitionStringSol2(s):
+    unique_char = set()
+    result = []
+    text = ""
+
+    left, right = 0, 0
+    while left >= 0 and right < len(s):
+        if s[right] in unique_char:
+            unique_char = set()
+            result.append(text)
+            left = right
+            text = ""
+        else:
+            unique_char.add(s[right])
+            text = s[left:right + 1]
+            right += 1
+    
+    if text != "":
+        result.append(text)
+
+    return len(result)
+
+
+
+        
+s = "abacaba"
+print("partitionString: ", partitionString(s))
+print("partitionString: ", partitionStringSol2(s))
+
+
+
+
+
+    
