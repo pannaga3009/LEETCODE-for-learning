@@ -836,7 +836,20 @@ print("partitionString: ", partitionString(s))
 print("partitionString: ", partitionStringSol2(s))
 
 
-
-
-
+def leet1492(n, k):
+    """
+    You are given two positive integers n and k. A factor of an integer n is defined as an integer i where n % i == 0.  
+    Consider a list of all factors of n sorted in ascending order, return the kth factor in this list or return -1 if n has less than k factors.
+    """
+    result = []
+    for i in range(1, n + 1):
+        if n % i == 0:
+            result.append(i)
+            if len(result) == k:
+                return result[k-1]
+    return -1
+        
     
+n = 12
+k = 3
+print("K the factor  ", leet1492(n, k))
