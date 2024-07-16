@@ -254,3 +254,246 @@ def unPickle():
     print(loaded_data)
 
 unPickle()
+
+def NumOfIslandsRecursive(grid):
+    """
+    dfs approach
+    will have visited set
+    directions ([-1, 0], [1, 0], [0, 1], [0, -1])
+    """
+    rows = len(grid)
+    cols = len(grid[0])
+    numOfIslands = 0
+    directions = [(1,0), (0,1), (-1, 0), (0, -1)]
+
+    def dfs(grid, r, c):
+        if 0<=r<rows and 0<=c<cols and grid[r][c] == "1":
+            grid[r][c] = "0"        
+            for dx, dy in directions:
+                dfs(grid, r + dx, c + dy)
+
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == "1":
+                numOfIslands += 1
+                dfs(grid, r, c)
+    return numOfIslands
+
+
+def numOfIslandsDFS(grid):
+    """
+    DFS - stack
+    visited set for rows and cols
+    directions as usual 
+    """
+    rows = len(grid)
+    cols = len(grid[0])
+    visited = set()
+    numOfIslands = 0
+    directions = [(0,1), (1,0), (-1, 0), (0, -1)]
+
+    def dfs(r, c):
+        stack = [(r,c)]
+        visited.add((r,c))
+
+        while stack:
+            x, y = stack.pop()
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if (0<=nx<rows and 0<=ny<cols and grid[nx][ny] == "1" and (nx, ny) not in visited):
+                    stack.append((nx, ny))
+                    visited.add((nx, ny))
+                    
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == "1" and (r, c) not in visited:
+                numOfIslands += 1
+                dfs(r, c)
+    return numOfIslands
+
+from collections import deque
+def numOfIslandsBFS(grid):
+    """
+    important thing so remember in bfs is it uses dequeue
+    and popping the elements breadthwise meaning FIFO - pop.left
+    have visited set to track all the visited rows and cols
+    deque to add the rows and cols when encountered with one
+    """
+    rows = len(grid)
+    cols = len(grid[0])
+    visited = set()
+    numOfIslands = 0
+    directions = [(0,1),(1,0),(-1, 0),(0,-1)]
+
+    def bfs(r, c):
+        q = deque([(r, c)])
+        visited.add((r,c))
+
+        while q:
+            x, y = q.popleft()
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if (0<=nx<rows and 0<=ny<cols and grid[nx][ny] == "1" and (nx,ny) not in visited):
+                    q.append((nx,ny))
+                    visited.add((nx,ny))
+
+
+    for r in range(rows):
+        for c in range(cols):
+            if (grid[r][c] == "1" and (r,c) not in visited):
+                numOfIslands += 1
+                bfs(r, c)
+    return numOfIslands
+    
+
+grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+
+grid1 = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+
+print("NumOfIslandsRecursive : ", NumOfIslandsRecursive(grid))
+print("numOfIslandsDFS : ", numOfIslandsDFS(grid1))
+print("numOfIslandsBFS : ", numOfIslandsBFS(grid1))
+
+def mergeIntervals(intervals):
+    """
+    Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+    Output: [[1,6],[8,10],[15,18]]
+    Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+
+    merge = [intervals[0]]
+    """
+
+    intervals.sort(key = lambda x:x[0])
+    merge = []
+
+    for i in intervals:
+        if not merge:
+            merge.append(i)
+        if merge[-1][1] >= i[0]:
+            merge[-1][1] = max(merge[-1][1], i[1])
+        else:
+            merge.append(i)
+
+    return merge
+
+intervals = [[1,3],[2,6],[8,10],[15,18]]
+print("mergeIntervals :", mergeIntervals(intervals))
+
+def canJump(nums):
+    """
+    You are given an integer array nums. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.
+    Return true if you can reach the last index, or false otherwise.
+    Input: nums = [2,3,1,1,4]
+    Output: true
+    Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+    """
+    last_index = len(nums) - 1
+    for i in range(len(nums)-1, -1, -1):
+        if i + nums[i] >= last_index:
+            last_index = i
+
+    return True if last_index == 0 else False
+    
+nums = [3,2,1,0,4]
+print("canJump --- ", canJump(nums))
+
+def buySellStocks(prices):
+    min_price = float("inf")
+    max_profit = 0
+
+    for price in prices:
+        if price < min_price:
+            min_price = price
+        elif price - min_price > max_profit:
+            max_profit = price - min_price
+    return max_profit
+
+def buySellStocks2(prices):
+    """
+    You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
+    On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. However, you can buy it then immediately sell it on the same day.
+    Find and return the maximum profit you can achieve.
+    Approach:
+    Whenever there is a increase in stocks value, check out the difference with the previous value and add it profit, keep iterating untill you get another rise and keep adding profit
+
+    """
+    profit = 0
+    for i in range(1, len(prices)):
+        if prices[i] > prices[i-1]:
+            profit += prices[i] - prices[i-1]
+    return profit
+
+    
+prices = [7,6,4,3,1]
+print("Buy Sell Stock --- ", buySellStocks(prices))
+prices2 = [7,1,5,3,6,4]
+print("Buy sell stocks 2 --- ", buySellStocks2(prices2))
+
+
+def generateParenthesis(n):
+    """
+    To generate parenthesis
+    It has to be valid meaning only can start from open brackets "(" 
+    add to stack
+    number of close_brackets < open_brackets
+    backtrack so once you reach len which is N * 2 then append to the output
+    and pop the stack to see other possibilities and backtracking
+    """
+    output = []
+    stack = []
+
+    def backtrack(openN, closedN):
+        if openN == closedN == n:
+            output.append("".join(stack))
+            return
+        
+        if openN < n:
+            stack.append("(")
+            backtrack(openN+1, closedN)
+            stack.pop()
+        
+        if closedN < openN:
+            stack.append(")")
+            backtrack(openN, closedN + 1)
+            stack.pop()
+    
+    backtrack(0, 0)
+    return output
+
+
+n = 3
+print("Generate parenthesis :", generateParenthesis(n))
+
+def uniquePaths(m, n):
+    """
+    There is a robot on an m x n grid. The robot is initially located at the top-left corner (i.e., grid[0][0]). The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]). The robot can only move either down or right at any point in time.
+    Given the two integers m and n, return the number of possible unique paths that the robot can take to reach the bottom-right corner.
+    approach:
+    1. The way to reach the 1st row and col is always 1 
+    2. From the second row, you can always go through right or down , but we can calculate the value how it goes by calculating up and left direction
+    """
+
+    grid = [[1] * n for _ in range(m)]
+
+    for x in range(1, m):
+        for y in range(1, n):
+            grid[x][y] = grid[x-1][y] + grid[x][y-1]
+    
+    return grid[-1][-1]
+
+m = 3
+n = 2
+print("uniquePaths ", uniquePaths(m,n))
+
+    
