@@ -496,4 +496,37 @@ m = 3
 n = 2
 print("uniquePaths ", uniquePaths(m,n))
 
+def compressedArray(arr, k):
+    """
+    Given an array of integers, a, in one operation one can select any two
+    adjacent elements and replace them with their product. This
+    operation can only be applied if the product of those adjacent
+    elements is less than or equal to k.
+    The goal is to reduce the length of the array as much as possible by
+    performing any number of operations. Return that minimum size.
+
+    Let array a = [2, 3, 3, 7, 3, 5] and k = 20
+    This is the list of operations that will give us the smallest array (1-
+    based indexing):
+    Merge the elements at indices (1, 2), resulting array will be - [6, 3, 7, 3,
+    5]
+    Merge the elements at indices (1, 2), resulting array will be - [18, 7, 3, 5]
+    • Merge the elements at indices (3, 4), resulting array will be - [18, 7, 15]
+    Hence, the answer is 3.
+    """
+    output = [arr[0]]
+    if len(arr) == 1:
+        return 1
     
+    for i in range(1, len(arr)):
+        if output[-1] * arr[i] <= k:
+            output[-1] = output[-1] * arr[i]
+        else:
+            output.append(arr[i])
+    return len(output)
+
+a = [2, 3, 3, 7, 3, 5]
+k = 20
+nums = [3,3,3,3]
+k2 = 6
+print("Minimum length of the compressed array is: ", compressedArray(nums, k2))
