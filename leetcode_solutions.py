@@ -853,3 +853,55 @@ def leet1492(n, k):
 n = 12
 k = 3
 print("K the factor  ", leet1492(n, k))
+
+def leetcode322(tickets):
+    """
+    You are given a list of airline tickets where tickets[i] = [fromi, toi] represent the departure and the arrival airports of one flight. Reconstruct the itinerary in order and return it.
+    All of the tickets belong to a man who departs from "JFK", thus, the itinerary must begin with "JFK". If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string.
+
+    For example, the itinerary ["JFK", "LGA"] has a smaller lexical order than ["JFK", "LGB"].
+    You may assume all tickets form at least one valid itinerary. You must use all the tickets once and only once.
+    Input: tickets = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+    Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+    Explanation: Another possible reconstruction is ["JFK","SFO","ATL","JFK","ATL","SFO"] but it is larger in lexical order.
+    """
+
+    res = ["JFK"]
+    adj = { src: [] for src, dst in tickets}
+
+    #Lexical order (alphabets in aseceding order)
+    tickets.sort()
+
+    #Adding the src and destination from the tickets to the dict adj
+    for src, dst in tickets:
+        adj[src].append(dst)
+
+    #Lets do a DFS traversal to go through all the nodes
+    def dfs(src):
+        if len(res) == len(tickets) + 1:
+            return True
+        if src not in adj:
+            return False
+        
+        #Intializing a temporary list to check the destination of sources
+        temp = list(adj[src])
+        for i, v in enumerate(temp):
+            adj[src].pop(i)
+            res.append(v)
+            if dfs(v):
+                return True
+            adj[src].insert(i, v)
+            res.pop()
+        return False
+
+    dfs("JFK")
+    return res
+
+
+tickets = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+print("Reconnect itinerary ",leetcode322(tickets))
+        
+
+
+
+    
