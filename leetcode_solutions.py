@@ -966,6 +966,69 @@ piles = [3,6,7,11]
 h = 8
 print("Koko eating min bananas  ", minEatingSpeed(piles,h))
 
+def Leetcode2340(nums):
+    """
+    You are given a 0-indexed integer array nums.
+    Swaps of adjacent elements are able to be performed on nums.
+
+    A valid array meets the following conditions:
+
+    The largest element (any of the largest elements if there are multiple) is at the rightmost position in the array.
+    The smallest element (any of the smallest elements if there are multiple) is at the leftmost position in the array.
+    Return the minimum swaps required to make nums a valid array.
+    Eg: nums = [3,4,5,5,3,1]
+    """
+    N = len(nums)
+    min_index = 0
+    max_index = N - 1
+
+    for i in range(N):
+        if nums[i] < nums[min_index]:
+            min_index = i
+        elif nums[i] >= nums[max_index]:
+            max_index = i
+    
+
+    if min_index > max_index:
+        return min_index + (N - 1 - max_index) - 1
+
+    return min_index + (N - 1 - max_index)
+    
+nums = [3,4,5,5,3,1]
+print("Min swaps required to make the array valid is", Leetcode2340(nums))
+
+def jumpgame2(nums):
+    """
+
+    Find the minimum jumps!
+    can do greedy/sliding the window because it would give us 0(n)
+    You are given a 0-indexed array of integers nums of length n. You are initially positioned at nums[0].
+    Each element nums[i] represents the maximum length of a forward jump from index i. In other words, if you are at nums[i], you can jump to any nums[i + j] where:
+    0 <= j <= nums[i] and
+    i + j < n
+    Return the minimum number of jumps to reach nums[n - 1]. The test cases are generated such that you can reach nums[n - 1].
+    Example 1:
+    Input: nums = [2,3,1,1,4]
+    Output: 2
+    Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+    """
+    res = 0
+    left = right = 0
+
+    if len(nums) == 1:
+        return 0
+
+    while right < len(nums) - 1:
+        farthest = 0
+        for i in range(left, right + 1):
+            farthest = max(farthest, i + nums[i])
+        left = right + 1
+        right = farthest
+        res += 1
+
+    return res
 
 
+
+    
     
