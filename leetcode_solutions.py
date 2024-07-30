@@ -1028,6 +1028,38 @@ def jumpgame2(nums):
 
     return res
 
+def leetcode1493(nums):
+    """
+    Given a binary array nums, you should delete one element from it.
+    Return the size of the longest non-empty subarray containing only 1's in the resulting array. Return 0 if there is no such subarray.
+    nums = [0,1,1,1,0,1,1,0,1]
+    output: 5
+
+    Input: nums = [1,1,1]
+    Output: 2
+    """
+    left, right = 0, 0
+    count_zeros = 0
+    max_len = 0
+
+    while right < len(nums) - 1:
+        if nums[right] == 0:
+            count_zeros += 1
+        
+
+        while count_zeros > 1:
+            if nums[left] == 0:
+                count_zeros -= 1
+            left += 1
+
+        max_len = max(max_len, right - left)
+        right += 1
+    
+    return max_len if max_len != len(nums) else len(nums)-1
+
+
+print("Leetcode1493 : ", leetcode1493([0,1,1,1,0,1,1,0,1]))
+    
 
 
     
