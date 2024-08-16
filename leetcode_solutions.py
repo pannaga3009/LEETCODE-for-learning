@@ -1060,7 +1060,152 @@ def leetcode1493(nums):
 
 print("Leetcode1493 : ", leetcode1493([0,1,1,1,0,1,1,0,1]))
     
+def leetcode128(nums):
+    """
+    Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
+    You must write an algorithm that runs in O(n) time.
+
+    Input: nums = [100,4,200,1,3,2]
+    Output: 4
+    Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.  
+    """
+    num_set = set(nums)
+    longest_sequence = 0
+
+    for n in nums:
+        #Check if num - 1 is in set or not, if it is not, take this num as start element
+        if n - 1 not in num_set:
+            current_num = n
+            current_streak = 1
+            
+            #Check if the consecutive elements for the current_num exists
+            while current_num + 1 in num_set:
+                current_num += 1
+                current_streak += 1
+
+            longest_sequence = max(longest_sequence, current_streak)
+    
+    return longest_sequence
+
+nums = [100,4,200,1,3,2]
+print(" The longest consecutive elements sequence ", leetcode128(nums))
+
+def leetcode959(grid):
+    """
+    An n x n grid is composed of 1 x 1 squares where each 1 x 1 square consists of a '/', '\', 
+    or blank space ' '. These characters divide the square into contiguous regions.
+    Given the grid grid represented as a string array, return the number of regions.
+    Note that backslash characters are escaped, so a '\' is represented as '\\'.
+    Input: grid = [" /","/ "]
+    Output: 2   
+    Input: grid = ["/\\","\\/"]
+    Output: 5
+    """
+
+    rows1, cols1 = len(grid), len(grid[0])
+    rows2, cols2 = 3 * rows1, 3 * cols1
+    grid2 = [[0] * cols2 for _ in range(rows2)]
+
+    #Write an 3 * 3 grid and mark the "/" and "\" as 1 in the matrix
+    for r in range(rows1):
+        for c in range(cols1):
+            r2, c2 = 3 * r, 3 * c
+            if grid[r][c] == "/":
+                grid2[r2][c2+2] = 1
+                grid2[r2+1][c2+1] = 1
+                grid2[r2+2][c2] = 1
+            elif grid[r][c] == "\\":
+                grid2[r2][c2] = 1
+                grid2[r2+1][c2+1] = 1
+                grid2[r2+2][c2+2] = 1
+    
+    def dfs(r, c, visit):
+        if (r < 0 or c < 0 or r == rows2 or c == cols2 or grid2[r][c] != 0 or (r,c) in visit):
+            return
+        
+        visit.add((r,c))
+        neighbors = [[r + 1, c], [r, c + 1], [r, c - 1], [r - 1, c]]
+        for nr, nc in neighbors:
+            dfs(nr, nc, visit)
 
 
+    #Now lets check for the elements to be zero to count the regions
+    res = 0
+    visit = set()
+    for r in range(rows2):
+        for c in range(cols2):
+            if grid2[r][c] == 0 and (r, c) not in visit:
+                dfs(r, c, visit)
+                res += 1
     
+    return res
+
+grid = ["/\\","\\/"]
+print(" leetcode959 number of regions is ", leetcode959(grid))
+
+
+def leetcode84(heights):
+    """
+    Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, 
+    return the area of the largest rectangle in the histogram.
+    Input: heights = [2,1,5,6,2,3]
+    Output: 10
+
+    The logic here is, get the all index and append it to stack:
+    if the height of elements in heights < than stack's last element then pop everything
+    and find the max area
+
+    if you reached the last elements in heights and you realize there are some elements in stack, pop everthing and 
+    find the max area
+    """
+
+    max_area = 0
+    stack = []
+    for i in range(len(heights)):
+        while stack and heights[i] < heights[stack[-1]]:
+            height = heights[stack.pop()]
+            width = i if not stack else i-stack[-1]-1
+            max_area = max(max_area, height * width)
+        
+        stack.append(i)
+
+    #If there is remaining elements in stack then pop it out
+    while stack:
+        height = heights[stack.pop()]
+        width = len(heights) if not stack else len(heights) - stack[-1] - 1
+        max_area = max(max_area, height * width)
+
     
+    return max_area
+
+heights = [2,1,5,6,2,3]
+print(f"leetcode 84: max_area of rectangle bar is {leetcode84(heights)}")
+
+def rotateImage(matrix):
+    """
+    You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).
+    You have to rotate the image in-place, which means you have to modify the input 2D matrix directly. 
+    DO NOT allocate another 2D matrix and do the rotation.
+    Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+    Output: [[7,4,1],[8,5,2],[9,6,3]]
+    """
+    l = 0
+    r = len(matrix) - 1
+
+    while l < r:
+        top, bottom = l, r
+        for i in range(r - l):
+            topleft = matrix[top][l + i]
+
+            matrix[top][l + i] = matrix[bottom - i][l]
+            matrix[bottom - i][l] = matrix[bottom][r - i]
+            matrix[bottom][r - i] = matrix[top + i][r]
+            matrix[top + i][r] = topleft
+
+        l += 1
+        r -= 1
+
+    return matrix
+
+matrix = [[1,2,3],[4,5,6],[7,8,9]]
+print("After rotating the image looks like ", rotateImage(matrix))
