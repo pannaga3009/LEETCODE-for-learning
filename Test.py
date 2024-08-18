@@ -584,3 +584,32 @@ def HouseRobber2(nums):
 
 nums = [2,3,2]
 print(" House Robber 2 --- ", HouseRobber2(nums))
+
+def runLengthEncoding(strn):
+    """
+    input_string = "aaabcca"
+    output = a3b1c2a1
+    
+    """
+    compressed_string = []
+    prev_char = strn[0]
+    count = 0
+
+    for s in strn:
+        if (prev_char == s):
+            count += 1
+        elif prev_char != s:
+            compressed_string.append(prev_char)
+            compressed_string.append(str(count))
+            prev_char = s
+            count = 1
+
+    if prev_char:
+        compressed_string.append(prev_char)
+        compressed_string.append(str(count))
+
+    return "".join(compressed_string)
+        
+
+input_string = "aaabcca"
+print(" After compression it is: ",runLengthEncoding(input_string))
