@@ -908,30 +908,41 @@ def leetcode261(n, edges):
     n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]
     """
 
+    #If there are no nodes then its a valid tree
     if not n:
         return True
+    
+    #Creating adjacent list to represent the graph
+    adj_list = {i: [] for i in range(n)}
+    for node1, node2 in edges:
+        adj_list[node1].append(node2)
+        adj_list[node2].append(node1)
 
-    adj = { i: [] for i in range(n)}
-
-    for n1, n2 in edges:
-        adj[n1].append(n2)
-        adj[n2].append(n1)
-
+    #Visited set to keep track of nodes visited to identify circles
     visited = set()
-    def dfs(i, prev):
-        if i in visited:
+
+    def dfs(node, parent):
+        #If a node is already been visited we have an cycle
+        if node in visited:
             return False
         
-        visited.add(i)
-        for j in adj[i]:
-            if j == prev:
+        visited.add(node)
+
+        #exploring all neighbors of the current node
+        for neighbor in adj_list[node]:
+            #Skip the parent node to avoid cycle detection
+            if neighbor == parent:
                 continue
 
-            if not dfs(j, i):
+            if not dfs(neighbor, node):
+                 # Recursively perform DFS, if it returns False, it means there's a cycle
                 return False
+            
         return True
-
+    
     return dfs(0, -1) and len(visited) == n
+
+
 
 edges = [[0,1],[0,2],[0,3],[1,4]]
 n = 5
