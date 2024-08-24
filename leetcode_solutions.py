@@ -1220,3 +1220,42 @@ def rotateImage(matrix):
 
 matrix = [[1,2,3],[4,5,6],[7,8,9]]
 print("After rotating the image looks like ", rotateImage(matrix))
+
+def permuteUnique(nums):
+    """
+    Find all the permutations of numbers array with duplicates.
+    Whenever there is a permutation I would try to do an backtrack for optimal solution
+    """
+
+    def backtrack(path, used):
+        if len(path) == len(nums):
+            result.append(path[:])
+
+        for i in range(len(nums)):
+            #skip used elements or duplicates (only use the first occurrence in a sequence of duplicates)
+            if used[i] or (i > 0 and nums[i] == nums[i-1] and not used[i-1]):
+                continue
+            
+             # Mark the element as used
+            used[i] = True
+            path.append(nums[i])
+
+            #Continue the permutation
+            backtrack(path, used)
+
+            # Umark the element as used and remove it from the current path
+            used[i] = False
+            path.pop()
+
+
+
+    nums.sort()
+    used = [False] * len(nums)
+    result = []
+
+    backtrack([], used)
+    return result
+
+
+nums = [1,2,2,0,0]
+print("permuteUnique: ", permuteUnique(nums))
