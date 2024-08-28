@@ -1259,3 +1259,126 @@ def permuteUnique(nums):
 
 nums = [1,2,2,0,0]
 print("permuteUnique: ", permuteUnique(nums))
+
+def stringFormatter1(input_string, replacements):
+    """
+    Given a string and a list of replacements as input, return the formatted string by replacing the valid indices with the appropriate replacement string from the given list.
+    input = "Sample{{ {1}, {0}{1}", replacements = ["alice", "Bob"] => output = "Sample{{ Bob, aliceBob"
+    input = "Sample {1}", replacements = ["alice"] => throw an exception
+    Throw an exception is any invalid case.
+    """
+    
+    result = []
+    i = 0
+    n = len(input_string)
+    
+    while i < n:
+        if input_string[i] == '{':
+            # Check for escaped braces "{{"
+            if i + 1 < n and input_string[i + 1] == '{':
+                i += 2
+                print(f"Printinggg result --- ", result)
+                result.append(input_string[:i])
+                continue
+            
+            # Find the closing brace
+            closing_brace_index = input_string.find('}', i)
+            if closing_brace_index == -1:
+                raise Exception("Mismatched braces in input string.")
+            
+            # Extract index between braces
+            placeholder_index = input_string[i + 1:closing_brace_index].strip()
+            print(placeholder_index)
+            
+            # Validate the placeholder index
+            if not placeholder_index.isdigit():
+                raise ValueError(f"Invalid placeholder index: {placeholder_index}")
+            
+            index = int(placeholder_index)
+            if index < 0 or index >= len(replacements):
+                raise Exception("Replacement index out of range.")
+            
+            # Replace the placeholder with the corresponding replacement
+            result.append(replacements[index])
+            i = closing_brace_index + 1
+        else:
+            # Append current character to the result
+            result.append(input_string[i])
+            i += 1
+
+    print("show what in result--", result)
+    # Convert the list of characters back to a string
+    formatted_string = ''.join(result)
+    
+    
+    return formatted_string
+
+# Test cases
+try:
+    input_string = "Sample{{ {1}, {0}{1}"
+    replacements = ["alice", "Bob"]
+    output = stringFormatter1(input_string, replacements)
+    print(f"Output is --- {output}")  # Should print "Sample{{ Bob, aliceBob"
+except Exception as e:
+    print(e)
+
+try:
+    input_string = "Sample {1}"
+    replacements = ["alice"]
+    output = stringFormatter1(input_string, replacements)
+    print(output)
+except Exception as e:
+    print(e)  # Should throw an exception since index 1 is out of range.
+
+
+# Iterate over the given string
+# Have a result str and keep appending characters as follows
+# Initialize a list to hold open brackets
+# if list empty and curr character is "{" add to list
+# if list empty and the curr character not "{" add to result {}
+# if list not empty
+#      - curr str is "{", add both bracket from list and curr bracket to result ("{{")
+#      - curr str is digit(0-9), check if replacement index valid, pop the "{" from stack and add to stack
+#      - curr str is "}", make sure list[-1] is digit and add replacement to result, pop the digit from stack
+#      - else just add the str to result ({S)
+
+def stringFormatter(input_string, replacements):
+    res = ""
+    stack = []
+    for i in range(len(input_string)):
+        if not stack and input_string[i] == '{':
+            stack.append(input_string[i])
+        elif not stack and input_string[i] != '{':
+            res += input_string[i]
+        elif stack and input_string[i] == '{':
+            res += stack[-1]
+            res += input_string[i]
+            stack.pop()
+        elif stack and input_string[i].isdigit():
+            num = int(input_string[i])
+            if (num > len(replacements) - 1 or num < 0):
+                raise Exception("Replacement index out of range.")
+            stack.pop()
+            stack.append(input_string[i])
+        elif stack and input_string[i] == '}':
+            if not stack[-1].isdigit():
+               raise Exception("Replacement index not found")
+            replace = replacements[int(stack[-1])]
+            stack.pop()
+            res += replace
+        else:
+            res += input_string[i]
+    return res
+
+input_string = "Sample{{ {1}, {0}{1}"
+replacements = ["alice", "Bob"]
+output = stringFormatter(input_string, replacements)
+print(f"My solution --- {output}")  # Should print "Sample{{ Bob, aliceBob"           
+
+input_string = "Sample {1}"
+replacements = ["alice"]
+output = stringFormatter(input_string, replacements)
+print(f"My solution --- {output}") # Throw exception
+                   
+
+
